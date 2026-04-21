@@ -20,11 +20,11 @@ public class PlayerSkills {
 
 
     public static void playerSkills() {
-        skills.add(new SkillState(MINER, 0.0f, 0));
-        skills.add(new SkillState(WARRIOR, 0.0f, 0));
-        skills.add(new SkillState(FARMER, 0.0f, 0));
-        skills.add(new SkillState(ARCHER, 0.0f, 0));
-        skills.add(new SkillState(BLACKSMITH, 0.0f, 0));
+        skills.add(new SkillState(MINER, 0.0f, 1));
+        skills.add(new SkillState(WARRIOR, 0.0f, 1));
+        skills.add(new SkillState(FARMER, 0.0f, 1));
+        skills.add(new SkillState(ARCHER, 0.0f, 1));
+        skills.add(new SkillState(BLACKSMITH, 0.0f, 1));
     }
 
 }

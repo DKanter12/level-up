@@ -64,7 +64,7 @@ public class SkillXPSystem {
             if (skill.id.equals(id)) {
                 SkillState newSkill = new SkillState(skill.id, skill.totalScore + amount, skill.level);
                 PlayerSkills.skills.set(i, newSkill);
-                LOGGER.info(String.valueOf(PlayerSkills.skills.get(i).totalScore));
+                LevelUpSystem.levelUp(newSkill,i);
 
                 return;
             }
