@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.mojang.text2speech.Narrator.LOGGER;
-
 public class SkillXPSystem {
 
     private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
@@ -18,11 +16,11 @@ public class SkillXPSystem {
 
         switch (action) {
             case MINE_ORE, MINE_STONE:
-                addById(PlayerSkills.MINER, 1f);
+                addById(PlayerSkills.MINER_ID, 1f);
                 break;
 
             case KILL_PLAYER:
-                addById(PlayerSkills.WARRIOR, 1f);
+                addById(PlayerSkills.WARRIOR_ID, 1f);
                 break;
 
             case KILL_MOB:
@@ -37,20 +35,20 @@ public class SkillXPSystem {
 
                 lastKilledMob.put(playerId, mobClass);
 
-                addById(PlayerSkills.WARRIOR, 1f);
+                addById(PlayerSkills.WARRIOR_ID, 1f);
                 break;
 
             case FARM_CROP:
-                addById(PlayerSkills.FARMER, 1f);
+                addById(PlayerSkills.FARMER_ID, 1f);
                 break;
 
             case BOW_HIT:
-                addById(PlayerSkills.ARCHER, 1f);
+                addById(PlayerSkills.ARCHER_ID, 1f);
                 break;
 
 
             case ANVIL_REPAIR:
-                addById(PlayerSkills.BLACKSMITH, 1f);
+                addById(PlayerSkills.BLACKSMITH_ID, 1f);
                 break;
         }
     }
