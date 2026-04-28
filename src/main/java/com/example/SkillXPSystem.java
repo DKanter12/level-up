@@ -1,26 +1,29 @@
 package com.example;
 
+import com.mojang.text2speech.Narrator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.logging.Logger;
+
+import static com.mojang.text2speech.Narrator.LOGGER;
 
 public class SkillXPSystem {
 
     private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
+    private static final float MIN_EXPERIENCE = 100f;
+    private static final float TEN_PERCENT = 1.1f;
 
-    public static void addExp(PlayerEntity player, SkillAction action, Entity target) {
-
-
+    public void addExp(PlayerEntity player, SkillAction action, Entity target) {
         switch (action) {
             case MINE_ORE, MINE_STONE:
-                addById(PlayerSkills.MINER_ID, 1f);
+                addById(player, PlayerSkills.MINER_ID);
                 break;
 
             case KILL_PLAYER:
-                addById(PlayerSkills.WARRIOR_ID, 1f);
+                addById(player, PlayerSkills.WARRIOR_ID);
                 break;
 
             case KILL_MOB:
@@ -34,38 +37,59 @@ public class SkillXPSystem {
                 }
 
                 lastKilledMob.put(playerId, mobClass);
-
-                addById(PlayerSkills.WARRIOR_ID, 1f);
+                addById(player, PlayerSkills.WARRIOR_ID);
                 break;
 
             case FARM_CROP:
-                addById(PlayerSkills.FARMER_ID, 1f);
+                addById(player, PlayerSkills.FARMER_ID);
                 break;
 
             case BOW_HIT:
-                addById(PlayerSkills.ARCHER_ID, 1f);
+                addById(player, PlayerSkills.ARCHER_ID);
                 break;
-
 
             case ANVIL_REPAIR:
-                addById(PlayerSkills.BLACKSMITH_ID, 1f);
+                addById(player, PlayerSkills.BLACKSMITH_ID);
                 break;
         }
     }
 
-
-    private static void addById(UUID id, float amount) {
-
-        for (int i = 0; i < PlayerSkills.skills.size(); i++) {
-            SkillState skill = PlayerSkills.skills.get(i);
-
-            if (skill.id.equals(id)) {
-                SkillState newSkill = new SkillState(skill.id, skill.totalScore + amount, skill.level);
-                PlayerSkills.skills.set(i, newSkill);
-                LevelUpSystem.levelUp(newSkill,i);
-
-                return;
+    private boolean hasLevelUp(float experience) {
+        while (experience >= MIN_EXPERIENCE) {
+            if (experience / TEN_PERCENT == MIN_EXPERIENCE) {
+                return true;
+            } else {
+                experience = experience / 1.1f;
             }
         }
+        return false;
     }
+
+
+    private void addById(PlayerEntity player, UUID id) {
+        SkillState skillState = PlayerSkills.playerSkills.get(id);
+
+        if (skillState == null) {
+            LOGGER.warn("Навык с ID {} не найден!", id);
+            return;
+        }
+
+        LOGGER.info("До изменения: {}", skillState.level + " " + skillState.totalScore);
+
+        skillState.totalScore += 1f;
+
+        if (hasLevelUp(skillState.totalScore)) {
+            skillState.level++;
+        }
+
+        LOGGER.info("До изменения: {}", skillState.level + " " + skillState.totalScore);
+
+        if (!player.getWorld().isClient()) {
+            PlayerData data = PlayerData.get((ServerWorld) player.getWorld());
+            data.setSkills(player.getUuid(), PlayerSkills.playerSkills);
+        }
+    }
+
+
+
 }

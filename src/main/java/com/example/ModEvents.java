@@ -26,10 +26,10 @@ public class ModEvents {
     );
 
     public static void register() {
-
+        SkillXPSystem skillXPSystem = new SkillXPSystem();
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
             if (source.getAttacker() instanceof PlayerEntity player) {
-                SkillXPSystem.addExp(player, SkillAction.KILL_MOB, entity);
+                skillXPSystem.addExp(player, SkillAction.KILL_MOB, entity);
             }
         });
 
@@ -38,17 +38,17 @@ public class ModEvents {
             Block block = state.getBlock();
 
             if (block == Blocks.STONE) {
-                SkillXPSystem.addExp(player, SkillAction.MINE_STONE, null);
+                skillXPSystem.addExp(player, SkillAction.MINE_STONE, null);
                 return;
             }
 
             if (ORE_BLOCKS.contains(block)) {
-                SkillXPSystem.addExp(player, SkillAction.MINE_ORE, null);
+                skillXPSystem.addExp(player, SkillAction.MINE_ORE, null);
                 return;
             }
 
             if (CROP_BLOCKS.contains(block)) {
-                SkillXPSystem.addExp(player, SkillAction.FARM_CROP, null);
+                skillXPSystem.addExp(player, SkillAction.FARM_CROP, null);
             }
         });
 
@@ -61,7 +61,7 @@ public class ModEvents {
                         && source.getSource().getClass().getSimpleName().contains("Arrow");
 
                 if (isArrow) {
-                    SkillXPSystem.addExp(player, SkillAction.BOW_HIT, entity);
+                    skillXPSystem.addExp(player, SkillAction.BOW_HIT, entity);
                 }
             }
 

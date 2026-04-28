@@ -1,6 +1,13 @@
 package com.example;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+
 import java.util.*;
+
+import static com.mojang.text2speech.Narrator.LOGGER;
 
 
 public class PlayerSkills {
@@ -14,15 +21,39 @@ public class PlayerSkills {
 
     public static final UUID BLACKSMITH_ID = UUID.fromString("55555555-5555-5555-5555-555555555555");
 
-    public static List<SkillState> skills = new ArrayList<>();
+    public static Map<UUID, SkillState> playerSkills = new HashMap<>();
 
 
-    public static void playerSkills() {
-        skills.add(new SkillState(MINER_ID, 0.0f, 1));
-        skills.add(new SkillState(WARRIOR_ID, 0.0f, 1));
-        skills.add(new SkillState(FARMER_ID, 0.0f, 1));
-        skills.add(new SkillState(ARCHER_ID, 0.0f, 1));
-        skills.add(new SkillState(BLACKSMITH_ID, 0.0f, 1));
+    public static   Map<UUID, SkillState> newSkill(UUID playerUuid) {
+        PlayerData playerData = new PlayerData();
+        Map<UUID, SkillState> skills = playerData.getNewSkills(playerUuid);
+
+        setPlayerSkills(skills);
+        return playerSkills;
     }
 
+    private static void setPlayerSkills(Map<UUID, SkillState> skills) {
+            playerSkills = skills;
+
+            skills.putIfAbsent(MINER_ID, new SkillState(0.0f, 1));
+            skills.putIfAbsent(WARRIOR_ID, new SkillState(0.0f, 1));
+            skills.putIfAbsent(FARMER_ID, new SkillState(0.0f, 1));
+            skills.putIfAbsent(ARCHER_ID, new SkillState(0.0f, 1));
+            skills.putIfAbsent(BLACKSMITH_ID, new SkillState(0.0f, 1));
+
+    }
+
+    public static void hasSkill(UUID playerUUid) {
+
+        Map<UUID, Map<UUID, SkillState>> skills = PlayerData.playerSkills;
+
+        if (skills.containsKey(playerUUid)) {
+            playerSkills =  PlayerData.getSkills(playerUUid);
+            LOGGER.info("1 "+playerSkills.toString());
+        }
+        else {
+            playerSkills =  newSkill(playerUUid);
+            LOGGER.info("2"+playerSkills.toString());
+        }
+    }
 }
