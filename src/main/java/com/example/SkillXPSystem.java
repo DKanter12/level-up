@@ -58,7 +58,11 @@ public class SkillXPSystem {
         while (experience >= MIN_EXPERIENCE) {
             if (experience / TEN_PERCENT == MIN_EXPERIENCE) {
                 return true;
-            } else {
+            }
+            else if (experience == MIN_EXPERIENCE) {
+                return true;
+            }
+            else {
                 experience = experience / 1.1f;
             }
         }
