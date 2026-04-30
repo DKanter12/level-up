@@ -54,9 +54,11 @@ public class SkillXPSystem {
         }
     }
 
-    private boolean hasLevelUp(float experience) {
+    private boolean hasLevelUp(float experience, int level) {
+        float levelExp = experience - (TEN_PERCENT * (level + 1) * 100);
+
         while (experience >= MIN_EXPERIENCE) {
-            if (experience / TEN_PERCENT == MIN_EXPERIENCE) {
+            if (experience / TEN_PERCENT == MIN_EXPERIENCE ||(levelExp < 1 && levelExp > 0)) {
                 return true;
             }
             else if (experience == MIN_EXPERIENCE) {
@@ -82,7 +84,7 @@ public class SkillXPSystem {
 
         skillState.totalScore += 1f;
 
-        if (hasLevelUp(skillState.totalScore)) {
+        if (hasLevelUp(skillState.totalScore, skillState.level)) {
             skillState.level++;
         }
 
