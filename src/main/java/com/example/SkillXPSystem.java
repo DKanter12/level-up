@@ -15,7 +15,7 @@ public class SkillXPSystem {
     private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
     private static final float MIN_EXPERIENCE = 100f;
     private static final float TEN_PERCENT = 1.1f;
-
+    private static float lastExperienceLevelUp;
     public void addExp(PlayerEntity player, SkillAction action, Entity target) {
         switch (action) {
             case MINE_ORE, MINE_STONE:
@@ -55,20 +55,21 @@ public class SkillXPSystem {
     }
 
     private boolean hasLevelUp(float experience, int level) {
-        float levelExp = experience - (TEN_PERCENT * (level + 1) * 100);
 
-        while (experience >= MIN_EXPERIENCE) {
-            if (experience / TEN_PERCENT == MIN_EXPERIENCE ||(levelExp < 1 && levelExp > 0)) {
-                return true;
-            }
-            else if (experience == MIN_EXPERIENCE) {
-                return true;
-            }
-            else {
-                experience = experience / 1.1f;
-            }
+        float experienceLevelUp = (float) Math.pow(1.1f , level) * 100 + lastExperienceLevelUp ;
+        LOGGER.info("level up: " + experienceLevelUp);
+
+        if(experience == MIN_EXPERIENCE){
+            lastExperienceLevelUp = experience - 1;
+
+            return true;
+        }
+        if (experienceLevelUp - experience >= 0 && experienceLevelUp - experience < 1){
+            lastExperienceLevelUp = experience - 1;
+            return true;
         }
         return false;
+
     }
 
 
