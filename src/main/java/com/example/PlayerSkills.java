@@ -24,8 +24,7 @@ public class PlayerSkills {
     public static Map<UUID, SkillState> playerSkills = new HashMap<>();
 
 
-    public static   Map<UUID, SkillState> newSkill(UUID playerUuid) {
-        PlayerData playerData = new PlayerData();
+    public static Map<UUID, SkillState> newSkill(UUID playerUuid) {
         Map<UUID, SkillState> skills = playerData.getNewSkills(playerUuid);
 
         setPlayerSkills(skills);
@@ -33,27 +32,31 @@ public class PlayerSkills {
     }
 
     private static void setPlayerSkills(Map<UUID, SkillState> skills) {
-            playerSkills = skills;
+        playerSkills = skills;
 
-            skills.putIfAbsent(MINER_ID, new SkillState(0.0f, 1));
-            skills.putIfAbsent(WARRIOR_ID, new SkillState(0.0f, 1));
-            skills.putIfAbsent(FARMER_ID, new SkillState(0.0f, 1));
-            skills.putIfAbsent(ARCHER_ID, new SkillState(0.0f, 1));
-            skills.putIfAbsent(BLACKSMITH_ID, new SkillState(0.0f, 1));
+        skills.putIfAbsent(MINER_ID, new SkillState(0.0f, 1));
+        skills.putIfAbsent(WARRIOR_ID, new SkillState(0.0f, 1));
+        skills.putIfAbsent(FARMER_ID, new SkillState(0.0f, 1));
+        skills.putIfAbsent(ARCHER_ID, new SkillState(0.0f, 1));
+        skills.putIfAbsent(BLACKSMITH_ID, new SkillState(0.0f, 1));
 
     }
 
-    public static void hasSkill(UUID playerUUid) {
+    public static void hasSkill(PlayerEntity player) {
+        // 1. Получаем мапу скиллов напрямую из игрока через наш интерфейс
+        Map<UUID, SkillState> skills = ((IPlayerSkills) player).getSkillsMap();
 
-        Map<UUID, Map<UUID, SkillState>> skills = PlayerData.playerSkills;
+        // 2. Проверяем, пустая ли мапа (загрузились ли данные из файла мира)
+        if (!skills.isEmpty()) {
+            // Данные найдены в памяти (загружены из NBT при входе игрока)
+            LOGGER.info("Данные игрока " + player.getName().getString() + " загружены: " + skills.toString());
+        } else {
+            // Данных нет (новый игрок или скиллы еще не прокачаны)
+            LOGGER.info("У игрока " + player.getName().getString() + " еще нет изученных навыков. Создаем пустую запись...");
 
-        if (skills.containsKey(playerUUid)) {
-            playerSkills =  PlayerData.getSkills(playerUUid);
-            LOGGER.info("1 "+playerSkills.toString());
-        }
-        else {
-            playerSkills =  newSkill(playerUUid);
-            LOGGER.info("2"+playerSkills.toString());
+            // Здесь можно инициализировать начальные навыки, если нужно:
+            // Map<UUID, SkillsState> newSkills = new HashMap<>();
+            // ((IPlayerSkills) player).setSkillsMap(newSkills);
         }
     }
 }

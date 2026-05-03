@@ -21,7 +21,7 @@ public class LevelUpMod implements ModInitializer {
      ModEvents.register();
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayerEntity player = handler.player;
-            PlayerSkills.hasSkill(player.getUuid());
+            PlayerSkills.hasSkill(player);
         });
 
         LOGGER.info("Mod loaded");

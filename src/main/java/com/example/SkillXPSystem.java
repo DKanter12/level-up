@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import static com.mojang.text2speech.Narrator.LOGGER;
 
-public class SkillXPSystem {
+public class  SkillXPSystem {
 
     private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
     private static final float MIN_EXPERIENCE = 100f;
@@ -93,7 +93,7 @@ public class SkillXPSystem {
 
         if (!player.getWorld().isClient()) {
             PlayerData data = PlayerData.get((ServerWorld) player.getWorld());
-            data.setSkills(player.getUuid(), PlayerSkills.playerSkills);
+            data.setSkills(player.v(), PlayerSkills.playerSkills);
         }
     }
 
