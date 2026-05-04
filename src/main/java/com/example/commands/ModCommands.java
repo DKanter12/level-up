@@ -1,5 +1,6 @@
 package com.example.commands;
 
+import com.example.IPlayerSkills;
 import com.example.PlayerSkills;
 import com.example.SkillState;
 import com.example.SkillXPSystem;
@@ -8,11 +9,13 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,8 +51,11 @@ public class ModCommands {
             );
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            registerCommand(dispatcher, "setscrore");
+            registerCommand(dispatcher );
+            resetallscore(dispatcher);
         });
+
+
     }
 
     private static String classInformation(String className, UUID uuid) {
@@ -60,9 +66,9 @@ public class ModCommands {
         return className + ": " + state.level + " level " + state.totalScore + " exp\n";
     }
 
-    private static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, String command) {
+    private static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
 
-        dispatcher.register(CommandManager.literal(command)
+        dispatcher.register(CommandManager.literal("setscrore")
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.argument("message", StringArgumentType.string())
                                 .then(CommandManager.argument("amount", IntegerArgumentType.integer())
@@ -78,10 +84,9 @@ public class ModCommands {
                                                                 + amount + " в навыке " + message),
                                                         false
                                                 );
-                                            }
-                                            else {
+                                            } else {
                                                 player.sendMessage(
-                                                        net.minecraft.text.Text.literal("Скилл с именем " + message + " не найден"),false);
+                                                        net.minecraft.text.Text.literal("Скилл с именем " + message + " не найден"), false);
                                             }
 
                                             return 1;
@@ -96,7 +101,7 @@ public class ModCommands {
         SkillState state = new SkillState();
         state.totalScore = exp;
 
-            state.level = SkillXPSystem.levelUp(exp);
+        state.level = SkillXPSystem.levelUp(exp);
 
         switch (className) {
             case "Miner":
@@ -120,5 +125,21 @@ public class ModCommands {
                 setScororeResult = true;
                 break;
         }
+    }
+
+    private static void resetallscore(CommandDispatcher<ServerCommandSource> dispatcher) {
+        dispatcher.register(CommandManager.literal("resetallscore")
+                .then(CommandManager.argument("player", EntityArgumentType.player())
+                        .executes(context -> {
+                            var player = EntityArgumentType.getPlayer(context, "player");
+
+                            PlayerSkills.playerSkills.clear();
+                            ((IPlayerSkills) player).setSkillsMap(PlayerSkills.playerSkills);
+                            player.sendMessage(
+                                    net.minecraft.text.Text.literal("Сброшены данные навыков для игрока " + player.getName().getString()),
+                                    false
+                            );
+                            return 0;
+                        })));
     }
 }
