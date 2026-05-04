@@ -30,7 +30,6 @@ public abstract class PlayerSkillsMixin implements IPlayerSkills {
         this.skillsMap = map;
     }
 
-    // Сохранение: превращаем Map<UUID, SkillsState> в NBT
     @Inject(method = "writeCustomDataToNbt", at = @At("HEAD"))
     public void writeSkillsToNbt(NbtCompound nbt, CallbackInfo ci) {
         NbtCompound allSkillsNbt = new NbtCompound();

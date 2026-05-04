@@ -15,7 +15,6 @@ public class AnvilRepairMixin {
 
     @Inject(method = "onTakeOutput", at = @At("HEAD"))
     private void onRepairTake(PlayerEntity player, ItemStack stack, CallbackInfo ci) {
-        // Проверяем, что это серверная сторона и предмет не пустой
         if (!player.getWorld().isClient && !stack.isEmpty()) {
             SkillXPSystem skillXPSystem = new SkillXPSystem();
             skillXPSystem.addExp(player, SkillAction.ANVIL_REPAIR, null);

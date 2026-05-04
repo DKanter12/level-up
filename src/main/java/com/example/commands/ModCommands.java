@@ -9,86 +9,74 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import static com.example.PlayerSkills.*;
-import static com.example.SkillXPSystem.lastExperienceLevelUp;
-import static com.mojang.text2speech.Narrator.LOGGER;
 
 public class ModCommands {
-    private static boolean setScororeResult = false;
 
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            // Команда /skills <player>
             dispatcher.register(CommandManager.literal("skills")
                     .then(CommandManager.argument("target", EntityArgumentType.player())
                             .executes(context -> {
-                                ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "target");
+                                ServerPlayerEntity target = EntityArgumentType.getPlayer(context, "target");
+                                Map<UUID, SkillState> skills = ((IPlayerSkills) target).getSkillsMap();
 
-                                String currentSkills = "Скиллы игрока " + targetPlayer.getName().getString() + ":\n" +
-                                        classInformation("Miner", MINER_ID) +
-                                        classInformation("Warrior", WARRIOR_ID) +
-                                        classInformation("Farmer", FARMER_ID) +
-                                        classInformation("Archer", ARCHER_ID) +
-                                        classInformation("Blacksmith", BLACKSMITH_ID);
+                                String info = "Скиллы " + target.getName().getString() + ":\n" +
+                                        format(skills, "Miner", MINER_ID) +
+                                        format(skills, "Warrior", WARRIOR_ID) +
+                                        format(skills, "Farmer", FARMER_ID) +
+                                        format(skills, "Archer", ARCHER_ID) +
+                                        format(skills, "Blacksmith", BLACKSMITH_ID);
 
-                                context.getSource().sendFeedback(
-                                        () -> Text.literal(currentSkills),
-                                        false
-                                );
-
+                                context.getSource().sendFeedback(() -> Text.literal(info), false);
                                 return 1;
                             })
                     )
             );
-        });
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            registerCommand(dispatcher );
-            resetallscore(dispatcher);
-        });
 
-
+            registerSetScore(dispatcher);
+            registerReset(dispatcher);
+        });
     }
 
-    private static String classInformation(String className, UUID uuid) {
-        SkillState state = PlayerSkills.playerSkills.get(uuid);
-        if (state == null) {
-            return className + ": 0 level 0 exp\n";
-        }
-        return className + ": " + state.level + " level " + state.totalScore + " exp\n";
+    private static String format(Map<UUID, SkillState> skills, String name, UUID id) {
+        SkillState s = skills.get(id);
+        return s == null ? name + ": 0 lvl\n" : name + ": " + s.level + " lvl (" + (int)s.totalScore + " exp)\n";
     }
 
-    private static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
-
-        dispatcher.register(CommandManager.literal("setscrore")
+    private static void registerSetScore(CommandDispatcher<ServerCommandSource> dispatcher) {
+        dispatcher.register(CommandManager.literal("setscore")
                 .then(CommandManager.argument("player", EntityArgumentType.player())
-                        .then(CommandManager.argument("message", StringArgumentType.string())
+                        .then(CommandManager.argument("skillName", StringArgumentType.string())
                                 .then(CommandManager.argument("amount", IntegerArgumentType.integer())
                                         .executes(context -> {
-
-                                            var player = EntityArgumentType.getPlayer(context, "player");
-                                            String message = StringArgumentType.getString(context, "message");
+                                            ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+                                            String skillName = StringArgumentType.getString(context, "skillName");
                                             int amount = IntegerArgumentType.getInteger(context, "amount");
-                                            setScrore(message, amount);
-                                            if (setScororeResult) {
-                                                player.sendMessage(
-                                                        net.minecraft.text.Text.literal("Опыт игрока " + player.getName().getString() + " задан в значение "
-                                                                + amount + " в навыке " + message),
-                                                        false
-                                                );
-                                            } else {
-                                                player.sendMessage(
-                                                        net.minecraft.text.Text.literal("Скилл с именем " + message + " не найден"), false);
-                                            }
 
+                                            Map<UUID, SkillState> skills = ((IPlayerSkills) player).getSkillsMap();
+                                            UUID skillId = switch (skillName.toLowerCase()) {
+                                                case "miner" -> MINER_ID;
+                                                case "warrior" -> WARRIOR_ID;
+                                                case "farmer" -> FARMER_ID;
+                                                case "archer" -> ARCHER_ID;
+                                                case "blacksmith" -> BLACKSMITH_ID;
+                                                default -> null;
+                                            };if (skillId != null) {
+                                                skills.put(skillId, new SkillState(amount, SkillXPSystem.levelUp(amount)));
+                                                context.getSource().sendFeedback(() -> Text.literal("Установлен опыт " + amount + " для " + skillName), false);
+                                            } else {
+                                                context.getSource().sendError(Text.literal("Неизвестный навык!"));
+                                            }
                                             return 1;
                                         })
                                 )
@@ -97,49 +85,15 @@ public class ModCommands {
         );
     }
 
-    private static void setScrore(String className, float exp) {
-        SkillState state = new SkillState();
-        state.totalScore = exp;
-
-        state.level = SkillXPSystem.levelUp(exp);
-
-        switch (className) {
-            case "Miner":
-                playerSkills.put(MINER_ID, state);
-                setScororeResult = true;
-                break;
-            case "Warrior":
-                playerSkills.put(WARRIOR_ID, state);
-                setScororeResult = true;
-                break;
-            case "Farmer":
-                playerSkills.put(FARMER_ID, state);
-                setScororeResult = true;
-                break;
-            case "Archer":
-                playerSkills.put(ARCHER_ID, state);
-                setScororeResult = true;
-                break;
-            case "Blacksmith":
-                playerSkills.put(BLACKSMITH_ID, state);
-                setScororeResult = true;
-                break;
-        }
-    }
-
-    private static void resetallscore(CommandDispatcher<ServerCommandSource> dispatcher) {
+    private static void registerReset(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("resetallscore")
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .executes(context -> {
-                            var player = EntityArgumentType.getPlayer(context, "player");
-
-                            PlayerSkills.playerSkills.clear();
-                            ((IPlayerSkills) player).setSkillsMap(PlayerSkills.playerSkills);
-                            player.sendMessage(
-                                    net.minecraft.text.Text.literal("Сброшены данные навыков для игрока " + player.getName().getString()),
-                                    false
-                            );
-                            return 0;
+                            ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+                            ((IPlayerSkills) player).getSkillsMap().clear();
+                            PlayerSkills.ensureInitialized(player);
+                            context.getSource().sendFeedback(() -> Text.literal("Сброшено для " + player.getName().getString()), false);
+                            return 1;
                         })));
     }
 }

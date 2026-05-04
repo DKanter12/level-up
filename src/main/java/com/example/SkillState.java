@@ -11,8 +11,7 @@ public class SkillState {
         this.level = level;
     }
 
-    public SkillState() {
-    }
+    public SkillState() {}
 
     public NbtCompound writeToNbt() {
         NbtCompound nbt = new NbtCompound();
@@ -24,7 +23,7 @@ public class SkillState {
     public static SkillState fromNbt(NbtCompound nbt) {
         SkillState skills = new SkillState();
         skills.level = nbt.getInt("level");
-        skills.totalScore = nbt.getInt("totalScore");
+        skills.totalScore = nbt.getFloat("totalScore");
         return skills;
     }
 }
