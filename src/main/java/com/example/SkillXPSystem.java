@@ -15,7 +15,7 @@ public class  SkillXPSystem {
     private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
     private static final float MIN_EXPERIENCE = 100f;
     private static final float TEN_PERCENT = 1.1f;
-    private static float lastExperienceLevelUp;
+    public static float lastExperienceLevelUp;
     public void addExp(PlayerEntity player, SkillAction action, Entity target) {
         switch (action) {
             case MINE_ORE, MINE_STONE:
@@ -54,22 +54,29 @@ public class  SkillXPSystem {
         }
     }
 
-    private boolean hasLevelUp(float experience, int level) {
+    public static int levelUp(float experience) {
+        int level = 1;
+        float lastExp = 100;
 
-        float experienceLevelUp = (float) Math.pow(1.1f , level) * 100 + lastExperienceLevelUp ;
-        LOGGER.info("level up: " + experienceLevelUp);
+        while (true) {
+            float nextLevelExp = (float) Math.pow(1.1f, level ) * 100 + lastExp;
 
-        if(experience == MIN_EXPERIENCE){
-            lastExperienceLevelUp = experience - 1;
+            if (experience == MIN_EXPERIENCE) {
+                level = 2;
+            }
 
-            return true;
+            if (experience >= nextLevelExp) {
+                level++;
+                lastExp = nextLevelExp;
+            }
+
+            else {
+                break;
+            }
         }
-        if (experienceLevelUp - experience >= 0 && experienceLevelUp - experience < 1){
-            lastExperienceLevelUp = experience - 1;
-            return true;
-        }
-        return false;
 
+        lastExperienceLevelUp = lastExp;
+        return level;
     }
 
 
@@ -84,10 +91,7 @@ public class  SkillXPSystem {
         LOGGER.info("До изменения: {}", skillState.level + " " + skillState.totalScore);
 
         skillState.totalScore += 1f;
-
-        if (hasLevelUp(skillState.totalScore, skillState.level)) {
-            ((IPlayerSkills) player).setSkillsMap(PlayerSkills.playerSkills);
-        }
+        skillState.level = levelUp(skillState.totalScore);
 
         LOGGER.info("До изменения: {}", skillState.level + " " + skillState.totalScore);
         PlayerSkills.playerSkills.put(id,skillState);
@@ -97,6 +101,7 @@ public class  SkillXPSystem {
             PlayerSkills.playerSkills.put(id,skillState);
             ((IPlayerSkills) player).setSkillsMap(PlayerSkills.playerSkills);
         }
+
     }
 
 

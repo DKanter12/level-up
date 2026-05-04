@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.commands.ModCommands;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -18,10 +19,14 @@ public class LevelUpMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-     ModEvents.register();
+
+        ModEvents.register();
+        ModCommands.register();
+
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayerEntity player = handler.player;
             PlayerSkills.hasSkill(player);
+
         });
 
         LOGGER.info("Mod loaded");
