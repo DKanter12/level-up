@@ -86,14 +86,16 @@ public class  SkillXPSystem {
         skillState.totalScore += 1f;
 
         if (hasLevelUp(skillState.totalScore, skillState.level)) {
-            skillState.level++;
+            ((IPlayerSkills) player).setSkillsMap(PlayerSkills.playerSkills);
         }
 
         LOGGER.info("До изменения: {}", skillState.level + " " + skillState.totalScore);
+        PlayerSkills.playerSkills.put(id,skillState);
+        ((IPlayerSkills) player).setSkillsMap(PlayerSkills.playerSkills);
 
         if (!player.getWorld().isClient()) {
-            PlayerData data = PlayerData.get((ServerWorld) player.getWorld());
-            data.setSkills(player.v(), PlayerSkills.playerSkills);
+            PlayerSkills.playerSkills.put(id,skillState);
+            ((IPlayerSkills) player).setSkillsMap(PlayerSkills.playerSkills);
         }
     }
 

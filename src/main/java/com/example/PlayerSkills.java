@@ -24,9 +24,8 @@ public class PlayerSkills {
     public static Map<UUID, SkillState> playerSkills = new HashMap<>();
 
 
-    public static Map<UUID, SkillState> newSkill(UUID playerUuid) {
-        Map<UUID, SkillState> skills = playerData.getNewSkills(playerUuid);
-
+    public static Map<UUID, SkillState> newSkill(PlayerEntity player) {
+        Map<UUID, SkillState> skills = ((IPlayerSkills) player).getSkillsMap();
         setPlayerSkills(skills);
         return playerSkills;
     }
@@ -43,20 +42,15 @@ public class PlayerSkills {
     }
 
     public static void hasSkill(PlayerEntity player) {
-        // 1. Получаем мапу скиллов напрямую из игрока через наш интерфейс
         Map<UUID, SkillState> skills = ((IPlayerSkills) player).getSkillsMap();
 
-        // 2. Проверяем, пустая ли мапа (загрузились ли данные из файла мира)
         if (!skills.isEmpty()) {
-            // Данные найдены в памяти (загружены из NBT при входе игрока)
+            playerSkills = skills;
             LOGGER.info("Данные игрока " + player.getName().getString() + " загружены: " + skills.toString());
         } else {
-            // Данных нет (новый игрок или скиллы еще не прокачаны)
-            LOGGER.info("У игрока " + player.getName().getString() + " еще нет изученных навыков. Создаем пустую запись...");
+            newSkill(player);
+        LOGGER.info("У игрока " + player.getName().getString() + " еще нет изученных навыков. Создаем пустую запись...");
 
-            // Здесь можно инициализировать начальные навыки, если нужно:
-            // Map<UUID, SkillsState> newSkills = new HashMap<>();
-            // ((IPlayerSkills) player).setSkillsMap(newSkills);
         }
     }
 }

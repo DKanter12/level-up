@@ -27,7 +27,11 @@ loom {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
         }
+
     }
+	runClient {
+		args "--username=Nickname"
+	}
 
 }
 

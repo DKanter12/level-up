@@ -36,14 +36,12 @@ public abstract class PlayerSkillsMixin implements IPlayerSkills {
         NbtCompound allSkillsNbt = new NbtCompound();
 
         for (Map.Entry<UUID, SkillState> entry : skillsMap.entrySet()) {
-            // Ключ - UUID скилла (строка), значение - NbtCompound из SkillsState
             allSkillsNbt.put(entry.getKey().toString(), entry.getValue().writeToNbt());
         }
 
         nbt.put("PlayerSkillsData", allSkillsNbt);
     }
 
-    // Загрузка: восстанавливаем Map из NBT при входе в мир
     @Inject(method = "readCustomDataFromNbt", at = @At("HEAD"))
     public void readSkillsFromNbt(NbtCompound nbt, CallbackInfo ci) {
         if (nbt.contains("PlayerSkillsData")) {
@@ -54,7 +52,6 @@ public abstract class PlayerSkillsMixin implements IPlayerSkills {
                 UUID skillUuid = UUID.fromString(skillUuidStr);
                 NbtCompound skillDataNbt = allSkillsNbt.getCompound(skillUuidStr);
 
-                // Используем наш метод из SkillsState для воссоздания объекта
                 this.skillsMap.put(skillUuid, SkillState.fromNbt(skillDataNbt));
             }
         }

@@ -21,7 +21,6 @@ public class SkillState {
         return nbt;
     }
 
-    // ЭТОТ МЕТОД ТОЖЕ СОЗДАЕМ САМИ
     public static SkillState fromNbt(NbtCompound nbt) {
         SkillState skills = new SkillState();
         skills.level = nbt.getInt("level");
