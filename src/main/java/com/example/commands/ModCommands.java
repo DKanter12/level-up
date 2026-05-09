@@ -5,6 +5,7 @@ import com.example.PlayerSkills;
 import com.example.SkillState;
 import com.example.SkillXPSystem;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -23,20 +24,18 @@ public class ModCommands {
 
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            // Команда /skills <player>
             dispatcher.register(CommandManager.literal("skills")
                     .then(CommandManager.argument("target", EntityArgumentType.player())
                             .executes(context -> {
                                 ServerPlayerEntity target = EntityArgumentType.getPlayer(context, "target");
                                 Map<UUID, SkillState> skills = ((IPlayerSkills) target).getSkillsMap();
-
                                 String info = "Скиллы " + target.getName().getString() + ":\n" +
                                         format(skills, "Miner", MINER_ID) +
                                         format(skills, "Warrior", WARRIOR_ID) +
                                         format(skills, "Farmer", FARMER_ID) +
                                         format(skills, "Archer", ARCHER_ID) +
                                         format(skills, "Blacksmith", BLACKSMITH_ID);
-
+                                LOGGER.info(info);
                                 context.getSource().sendFeedback(() -> Text.literal(info), false);
                                 return 1;
                             })
@@ -50,34 +49,40 @@ public class ModCommands {
 
     private static String format(Map<UUID, SkillState> skills, String name, UUID id) {
         SkillState s = skills.get(id);
-        return s == null ? name + ": 0 lvl\n" : name + ": " + s.level + " lvl (" + (int)s.totalScore + " exp)\n";
+        return s == null ? name + ": 0 lvl\n" : name + ": " + s.level + " lvl (" + s.totalScore + " exp)\n";
     }
 
     private static void registerSetScore(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("setscore")
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.argument("skillName", StringArgumentType.string())
-                                .then(CommandManager.argument("amount", IntegerArgumentType.integer())
+                                .then(CommandManager.argument("amount", FloatArgumentType.floatArg())
                                         .executes(context -> {
                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
                                             String skillName = StringArgumentType.getString(context, "skillName");
-                                            int amount = IntegerArgumentType.getInteger(context, "amount");
-
-                                            Map<UUID, SkillState> skills = ((IPlayerSkills) player).getSkillsMap();
-                                            UUID skillId = switch (skillName.toLowerCase()) {
-                                                case "miner" -> MINER_ID;
-                                                case "warrior" -> WARRIOR_ID;
-                                                case "farmer" -> FARMER_ID;
-                                                case "archer" -> ARCHER_ID;
-                                                case "blacksmith" -> BLACKSMITH_ID;
-                                                default -> null;
-                                            };if (skillId != null) {
-                                                skills.put(skillId, new SkillState(amount, SkillXPSystem.levelUp(amount)));
-                                                context.getSource().sendFeedback(() -> Text.literal("Установлен опыт " + amount + " для " + skillName), false);
-                                            } else {
-                                                context.getSource().sendError(Text.literal("Неизвестный навык!"));
-                                            }
-                                            return 1;
+                                            float amount = FloatArgumentType.getFloat(context, "amount");
+                                               if (amount >= 0) {
+                                                   Map<UUID, SkillState> skills = ((IPlayerSkills) player).getSkillsMap();
+                                                   UUID skillId = switch (skillName.toLowerCase()) {
+                                                       case "miner" -> MINER_ID;
+                                                       case "warrior" -> WARRIOR_ID;
+                                                       case "farmer" -> FARMER_ID;
+                                                       case "archer" -> ARCHER_ID;
+                                                       case "blacksmith" -> BLACKSMITH_ID;
+                                                       default -> null;
+                                                   };
+                                                   if (skillId != null) {
+                                                       skills.put(skillId, new SkillState(amount, SkillXPSystem.levelUp(amount)));
+                                                       context.getSource().sendFeedback(() -> Text.literal("Установлен опыт " + amount + " для " + skillName), false);
+                                                   } else {
+                                                       context.getSource().sendError(Text.literal("Неизвестный навык!"));
+                                                   }
+                                                   return 1;
+                                               }
+                                               else {
+                                                   context.getSource().sendError(Text.literal("Опыт не может быть отрицательным!"));
+                                                   return 1;
+                                               }
                                         })
                                 )
                         )

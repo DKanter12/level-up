@@ -53,7 +53,7 @@ public class SkillXPSystem {
             state = skills.get(skillId);
         }
 
-        state.totalScore += 1f;
+        state.totalScore += 1.5f;
         state.level = levelUp(state.totalScore);
 
     }

@@ -19,15 +19,11 @@ public class PlayerSkills {
     public static void ensureInitialized(PlayerEntity player) {
         Map<UUID, SkillState> skills = ((IPlayerSkills) player).getSkillsMap();
 
-        boolean added = false;
-        added |= (skills.putIfAbsent(MINER_ID, new SkillState(0.0f, 1)) == null);
-        added |= (skills.putIfAbsent(WARRIOR_ID, new SkillState(0.0f, 1)) == null);
-        added |= (skills.putIfAbsent(FARMER_ID, new SkillState(0.0f, 1)) == null);
-        added |= (skills.putIfAbsent(ARCHER_ID, new SkillState(0.0f, 1)) == null);
-        added |= (skills.putIfAbsent(BLACKSMITH_ID, new SkillState(0.0f, 1)) == null);
 
-        if (added) {
-            LOGGER.info("Созданы базовые навыки для игрока: {}", player.getName().getString());
-        }
+        skills.putIfAbsent(MINER_ID, new SkillState(0.0f, 1));
+        skills.putIfAbsent(WARRIOR_ID, new SkillState(0.0f, 1));
+        skills.putIfAbsent(FARMER_ID, new SkillState(0.0f, 1));
+        skills.putIfAbsent(ARCHER_ID, new SkillState(0.0f, 1));
+        skills.putIfAbsent(BLACKSMITH_ID, new SkillState(0.0f, 1));
     }
 }
