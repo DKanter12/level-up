@@ -3,10 +3,13 @@ package com.example;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 
+import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.screen.AnvilScreenHandler;
+import net.minecraft.screen.CraftingScreenHandler;
 
 import java.util.Set;
 
@@ -23,6 +26,7 @@ public class ModEvents {
             Blocks.WHEAT,
             Blocks.CARROTS,
             Blocks.POTATOES
+
     );
 
     public static void register() {

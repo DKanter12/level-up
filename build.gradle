@@ -26,7 +26,7 @@ loom {
         "modid" {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
-        }
+        } 
 
     }
 	runClient {
