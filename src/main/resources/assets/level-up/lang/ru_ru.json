@@ -1,0 +1,21 @@
+{
+  "class.miner": "Шахтёр",
+  "class.miner.line1": "Получает опыт за добычу руды",
+  "class.miner.line2": "и копку природного гладкого камня",
+
+  "class.warrior": "Воин",
+  "class.warrior.line1": "Получает опыт за убийство мобов",
+  "class.warrior.line2": "и других игроков",
+
+  "class.farmer": "Фермер",
+  "class.farmer.line1": "Получает опыт за сбор урожая,",
+  "class.farmer.line2": "например картошки",
+
+  "class.archer": "Лучник",
+  "class.archer.line1": "Получает опыт за попадания",
+  "class.archer.line2": "по живым существам из лука",
+
+  "class.blacksmith": "Кузнец",
+  "class.blacksmith.line1": "Получает опыт за починку",
+  "class.blacksmith.line2": "предметов на наковальне"
+}

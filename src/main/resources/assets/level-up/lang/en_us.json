@@ -1,0 +1,21 @@
+{
+  "class.miner": "Miner",
+  "class.miner.line1": "Gains experience from mining ores",
+  "class.miner.line2": "and digging natural smooth stone",
+
+  "class.warrior": "Warrior",
+  "class.warrior.line1": "Gains experience from killing mobs",
+  "class.warrior.line2": "and other players",
+
+  "class.farmer": "Farmer",
+  "class.farmer.line1": "Gains experience from harvesting crops,",
+  "class.farmer.line2": "for example potatoes",
+
+  "class.archer": "Archer",
+  "class.archer.line1": "Gains experience from hitting",
+  "class.archer.line2": "living entities with a bow",
+
+  "class.blacksmith": "Blacksmith",
+  "class.blacksmith.line1": "Gains experience by repairing",
+  "class.blacksmith.line2": "items on an anvil"
+}

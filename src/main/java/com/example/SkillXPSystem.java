@@ -10,7 +10,6 @@ import java.util.*;
 import static net.minecraft.client.render.model.json.ModelTransformationMode.GUI;
 
 public class SkillXPSystem {
-    private static final Logger LOGGER = LoggerFactory.getLogger("SkillXPSystem");
     private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
 
     public void addExp(PlayerEntity player, SkillAction action, Entity target) {

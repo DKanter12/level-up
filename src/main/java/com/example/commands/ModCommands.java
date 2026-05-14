@@ -10,6 +10,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -91,6 +92,7 @@ public class ModCommands {
     }
 
     private static void registerReset(CommandDispatcher<ServerCommandSource> dispatcher) {
+
         dispatcher.register(CommandManager.literal("resetallscore")
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .executes(context -> {
