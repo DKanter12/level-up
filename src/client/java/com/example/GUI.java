@@ -1,33 +1,21 @@
 package com.example;
 
-import com.google.common.collect.Lists;
-import net.minecraft.advancement.criterion.StartedRidingCriterion;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import static com.example.LevelUpMod.MODID;
-import static com.example.PlayerSkills.MINER_ID;
-import static com.example.SkillXPSystem.levelUp;
 
 public class GUI extends Screen {
+  public float lastExp = 100;
+    public int minerWidth;
+    public int warriorWidth;
+    public int farmerWidth;
+    public int archerWidth;
+    public int blacksmithWidth;
 
-   public ServerPlayerEntity player;
-
-    public void setPlayer(ServerPlayerEntity player){
-        this.player = player;
-    }
+    int percent;
 
     protected GUI(Text title) {
         super(title);
@@ -37,7 +25,7 @@ public class GUI extends Screen {
     public  void render(DrawContext context, int mouseX, int mouseY, float delta) {
           //привет это джемини
         // СПАСИ МЕНЯ ПОЖАЛУЙСТА!!!!!
-        Map<UUID, SkillState> skills = ((IPlayerSkills) player).getSkillsMap();
+
 
 
         context.drawText(textRenderer, Text.translatable("class.miner"), 65, 10, 0xFFFF00, true);
@@ -60,25 +48,65 @@ public class GUI extends Screen {
         context.drawText(textRenderer, Text.translatable("class.blacksmith.line1"), 65, 180, 16777215, true);
         context.drawText(textRenderer, Text.translatable("class.blacksmith.line2"), 65, 190, 16777215, true);
 
-        context.drawTexture(new Identifier(MODID, "textures/miner_icon.png"),      25, 8,   0, 0, 34, 34, 34, 34);
-        context.drawTexture(new Identifier(MODID, "textures/warrior_icon.png"),    25, 48,  0, 0, 34, 34, 34, 34);
-        context.drawTexture(new Identifier(MODID, "textures/farmer_icon.png"),     25, 88,  0, 0, 34, 34, 34, 34);
-        context.drawTexture(new Identifier(MODID, "textures/archer_icon.png"),     25, 128, 0, 0, 34, 34, 34, 34);
-        context.drawTexture(new Identifier(MODID, "textures/blacksmith_icon.png"), 25, 168, 0, 0, 34, 34, 34, 34);
+        setClassIcon("miner_icon", 8, context);
+        setClassIcon("warrior_icon", 48, context);
+        setClassIcon("farmer_icon", 88, context);
+        setClassIcon("archer_icon", 128, context);
+        setClassIcon("blacksmith_icon", 168, context);
 
-        context.drawTexture(new Identifier(MODID, "textures/progress_bar/progress_bar_frame.png"),   258, 18,  0, 0, getWidth(1,skills.get(MINER_ID).totalScore), 22, 156, 22);
-        context.drawTexture(new Identifier(MODID, "textures/progress_bar/progress_bar.png"),   261, 21,  0, 0, 78, 16, 150, 16);
+        setProgressBar(21, minerWidth, 18, context);
+        setProgressBar(61, warriorWidth, 58, context);
+        setProgressBar(101, farmerWidth, 98, context);
+        setProgressBar(141, archerWidth, 138, context);
+        setProgressBar(181, blacksmithWidth, 178, context);
 
     }
-      public int getWidth ( float totalScore){
-          levelUp(totalScore)
-          float onePercent = nextLevelUpNumber / 100;
-          int lastNumberPercent = 1;
-          float width = 1.56f * lastNumberPercent;
-
-          while (onePercent * lastNumberPercent < totalScore){
-              lastNumberPercent++;
-          }
-          return (int) width;
+      public int getWidth (float experience){
+        if (experience <= 100){
+            return (int) (1.5f * experience);
+        }
+        else {
+            float onePercent = (getLevelUpExp(experience) - lastExp) / 100;
+            percent = 1;
+            while (true) {
+                percent++;
+                if (onePercent * percent >= experience - lastExp) {
+                    float width = 1.5f * percent;
+                    return (int) width;
+                }
+            }
+        }
       }
+
+    public float getLevelUpExp(float experience) {
+        int level = 1;
+        float LevelUpExp;
+        while (true) {
+            LevelUpExp = (float) Math.pow(1.1f, level) * 100 + lastExp;
+            if (experience >= LevelUpExp) {
+                level++;
+                lastExp = LevelUpExp;
+            } else {
+                LevelUpExp = (float) Math.pow(1.1f, level) * 100 + lastExp;
+                break;
+            }
+        }
+        return LevelUpExp;
+    }
+
+    private void setProgressBar(int y, int width, int frameY, DrawContext context){
+
+        context.drawTexture(new Identifier(MODID, "textures/progress_bar/progress_bar_frame.png"),
+                258, frameY, 0, 0, 156, 22, 156, 22);
+
+        context.drawTexture(new Identifier(MODID, "textures/progress_bar/progress_bar.png"),
+                261, y, 0, 0, width, 16, 150, 16);
+
+    }
+
+    private void setClassIcon(String textureName, int y, DrawContext context) {
+        context.drawTexture(new Identifier(MODID, "textures/" + textureName + ".png"),
+                25, y, 0, 0, 34, 34, 34, 34
+        );
+    }
 }

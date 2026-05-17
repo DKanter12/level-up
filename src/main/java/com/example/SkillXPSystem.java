@@ -30,7 +30,7 @@ public class SkillXPSystem {
         }
     }
 
-    public static int levelUp(float experience) {
+    public static int getLevel(float experience) {
         int level = 1;
         float lastExp = 100;
         while (true) {
@@ -56,7 +56,7 @@ public class SkillXPSystem {
         }
 
         state.totalScore += 1.5f;
-        state.level = levelUp(state.totalScore);
+        state.level = getLevel(state.totalScore);
 
     }
 }

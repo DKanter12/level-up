@@ -73,7 +73,7 @@ public class ModCommands {
                                                        default -> null;
                                                    };
                                                    if (skillId != null) {
-                                                       skills.put(skillId, new SkillState(amount, SkillXPSystem.levelUp(amount)));
+                                                       skills.put(skillId, new SkillState(amount, SkillXPSystem.getLevel(amount)));
                                                        context.getSource().sendFeedback(() -> Text.literal("Установлен опыт " + amount + " для " + skillName), false);
                                                    } else {
                                                        context.getSource().sendError(Text.literal("Неизвестный навык!"));
