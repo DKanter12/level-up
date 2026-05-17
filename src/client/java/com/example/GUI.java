@@ -17,7 +17,7 @@ public class GUI extends Screen {
 
     int percent;
 
-    protected GUI(Text title) {
+    public GUI(Text title) {
         super(title);
     }
 

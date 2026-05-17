@@ -21,12 +21,15 @@ public class ExampleModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        registerGui();
+    }
 
+    public void registerGui(){
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             player = handler.player;
         });
 
-      KeyBinding keyBinding =  KeyBindingHelper.registerKeyBinding(new KeyBinding("Open",InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,"category.level-up.keys"));
+        KeyBinding keyBinding =  KeyBindingHelper.registerKeyBinding(new KeyBinding("Open",InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,"category.level-up.keys"));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while(keyBinding.wasPressed()){
                 GUI gui = new GUI (Text.literal("level-up-menu"));
