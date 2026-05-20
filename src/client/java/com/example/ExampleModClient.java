@@ -21,25 +21,22 @@ public class ExampleModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ClientSkillsReceiver.register();
         registerGui();
     }
 
-    public void registerGui(){
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            player = handler.player;
-        });
 
+    public void registerGui(){
         KeyBinding keyBinding =  KeyBindingHelper.registerKeyBinding(new KeyBinding("Open",InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,"category.level-up.keys"));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while(keyBinding.wasPressed()){
-                GUI gui = new GUI (Text.literal("level-up-menu"));
-                Map<UUID, SkillState> skills = ((IPlayerSkills) player).getSkillsMap();
 
-                gui.minerWidth = gui.getWidth(skills.get(MINER_ID).totalScore);
-                gui.warriorWidth = gui.getWidth(skills.get(WARRIOR_ID).totalScore);
-                gui.farmerWidth = gui.getWidth(skills.get(FARMER_ID).totalScore);
-                gui.archerWidth = gui.getWidth(skills.get(ARCHER_ID).totalScore);
-                gui.blacksmithWidth = gui.getWidth(skills.get(BLACKSMITH_ID).totalScore);
+                GUI gui = new GUI (Text.literal("level-up-menu"));
+                gui.minerWidth = gui.getWidth(ClientSkillsCache.MINER_SCORE);
+                gui.warriorWidth = gui.getWidth(ClientSkillsCache.WARRIOR_SCORE);
+                gui.farmerWidth = gui.getWidth(ClientSkillsCache.ARCHER_SCORE);
+                gui.archerWidth = gui.getWidth(ClientSkillsCache.FARMER_SCORE);
+                gui.blacksmithWidth = gui.getWidth(ClientSkillsCache.BLACKSMITH_SCORE);
 
                 MinecraftClient.getInstance().setScreen(gui);
             }

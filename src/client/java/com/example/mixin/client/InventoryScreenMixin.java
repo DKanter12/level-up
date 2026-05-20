@@ -1,9 +1,6 @@
 package com.example.mixin.client;
 
-import com.example.ExampleModClient;
-import com.example.GUI;
-import com.example.IPlayerSkills;
-import com.example.SkillState;
+import com.example.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -39,22 +36,14 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
         this.addDrawableChild(ButtonWidget.builder(
                 Text.literal("Skills"),
                 button -> {
+                    GUI gui = new GUI (Text.literal("level-up-menu"));
+                    gui.minerWidth = gui.getWidth(ClientSkillsCache.MINER_SCORE);
+                    gui.warriorWidth = gui.getWidth(ClientSkillsCache.WARRIOR_SCORE);
+                    gui.farmerWidth = gui.getWidth(ClientSkillsCache.ARCHER_SCORE);
+                    gui.archerWidth = gui.getWidth(ClientSkillsCache.FARMER_SCORE);
+                    gui.blacksmithWidth = gui.getWidth(ClientSkillsCache.BLACKSMITH_SCORE);
 
-                    MinecraftClient client = MinecraftClient.getInstance();
-
-                    if (client.player == null) return;
-
-                    GUI gui = new GUI(Text.literal("level-up-menu"));
-
-                    Map<UUID, SkillState> skills = ((IPlayerSkills) client.player).getSkillsMap();
-
-                    gui.minerWidth = gui.getWidth(skills.get(MINER_ID).totalScore);
-                    gui.warriorWidth = gui.getWidth(skills.get(WARRIOR_ID).totalScore);
-                    gui.farmerWidth = gui.getWidth(skills.get(FARMER_ID).totalScore);
-                    gui.archerWidth = gui.getWidth(skills.get(ARCHER_ID).totalScore);
-                    gui.blacksmithWidth = gui.getWidth(skills.get(BLACKSMITH_ID).totalScore);
-
-                    client.setScreen(gui);
+                    MinecraftClient.getInstance().setScreen(gui);
                 }
         ).dimensions(this.x + 182, this.y + 8, 50, 20).build());
     }

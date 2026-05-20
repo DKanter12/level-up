@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.commands.ModCommands;
+import com.example.packets.ServerSkillsSync;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,9 +18,11 @@ public class LevelUpMod implements ModInitializer {
     public void onInitialize() {
         ModEvents.register();
         ModCommands.register();
+
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             player = handler.player;
             PlayerSkills.ensureInitialized(player);
+            ServerSkillsSync.send(player);
         });
 
 

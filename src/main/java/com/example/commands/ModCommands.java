@@ -4,6 +4,7 @@ import com.example.IPlayerSkills;
 import com.example.PlayerSkills;
 import com.example.SkillState;
 import com.example.SkillXPSystem;
+import com.example.packets.ServerSkillsSync;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -36,7 +37,6 @@ public class ModCommands {
                                         format(skills, "Farmer", FARMER_ID) +
                                         format(skills, "Archer", ARCHER_ID) +
                                         format(skills, "Blacksmith", BLACKSMITH_ID);
-                                LOGGER.info(info);
                                 context.getSource().sendFeedback(() -> Text.literal(info), false);
                                 return 1;
                             })
@@ -70,10 +70,12 @@ public class ModCommands {
                                                        case "farmer" -> FARMER_ID;
                                                        case "archer" -> ARCHER_ID;
                                                        case "blacksmith" -> BLACKSMITH_ID;
+
                                                        default -> null;
                                                    };
                                                    if (skillId != null) {
                                                        skills.put(skillId, new SkillState(amount, SkillXPSystem.getLevel(amount)));
+                                                       ServerSkillsSync.send(player);
                                                        context.getSource().sendFeedback(() -> Text.literal("Установлен опыт " + amount + " для " + skillName), false);
                                                    } else {
                                                        context.getSource().sendError(Text.literal("Неизвестный навык!"));

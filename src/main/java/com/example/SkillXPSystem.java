@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.packets.ServerSkillsSync;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.slf4j.Logger;
@@ -57,6 +58,8 @@ public class SkillXPSystem {
 
         state.totalScore += 1.5f;
         state.level = getLevel(state.totalScore);
+        ServerSkillsSync.send(player);
+
 
     }
 }
