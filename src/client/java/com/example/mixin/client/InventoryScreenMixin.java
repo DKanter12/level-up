@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import static com.example.PlayerSkills.*;
 import static com.example.PlayerSkills.ARCHER_ID;
 import static com.example.PlayerSkills.BLACKSMITH_ID;
+import static com.example.souds.ModSounds.OPEN_MENU;
 
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHandler> {
@@ -35,6 +37,11 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
         this.addDrawableChild(ButtonWidget.builder(
                 Text.literal("Skills"),
                 button -> {
+                    PlayerEntity player = MinecraftClient.getInstance().player;
+                    if (player != null) {
+                        player.playSound(OPEN_MENU, 1f, 1f);
+                    }
+
                     GUI gui = new GUI (Text.literal("level-up-menu"));
                     gui.minerWidth = gui.getWidth(ClientSkillsCache.MINER_SCORE);
                     gui.warriorWidth = gui.getWidth(ClientSkillsCache.WARRIOR_SCORE);

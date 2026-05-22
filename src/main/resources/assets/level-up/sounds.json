@@ -3,5 +3,11 @@
     "sounds": [
        "level-up:level_up_sound"
     ]
-  }
+  },
+  "open_menu": {
+   "sounds": [
+    "level-up:open_menu"
+  ]
+}
+
 }

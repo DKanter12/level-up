@@ -11,9 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static com.example.LevelUpMod.LOGGER;
-import static net.minecraft.client.render.model.json.ModelTransformationMode.GUI;
-
 public class SkillXPSystem {
     private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
     private static  int lastLevel = 1;
@@ -39,7 +36,6 @@ public class SkillXPSystem {
     private static void playLevelUpSound(PlayerEntity player){
         player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
                 ModSounds.LEVEL_UP_SOUND, net.minecraft.sound.SoundCategory.PLAYERS, 1f, 1f);
-
     }
 
 
