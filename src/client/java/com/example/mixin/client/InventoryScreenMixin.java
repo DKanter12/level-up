@@ -32,7 +32,6 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 
     @Inject(method = "init", at = @At("TAIL"))
     private void addButton(CallbackInfo ci) {
-
         this.addDrawableChild(ButtonWidget.builder(
                 Text.literal("Skills"),
                 button -> {

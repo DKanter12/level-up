@@ -1,17 +1,22 @@
 package com.example;
 
+
 import com.example.packets.ServerSkillsSync;
+import com.example.souds.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static com.example.LevelUpMod.LOGGER;
 import static net.minecraft.client.render.model.json.ModelTransformationMode.GUI;
 
 public class SkillXPSystem {
     private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
+    private static  int lastLevel = 1;
 
     public void addExp(PlayerEntity player, SkillAction action, Entity target) {
         switch (action) {
@@ -31,18 +36,37 @@ public class SkillXPSystem {
         }
     }
 
-    public static int getLevel(float experience) {
+    private static void playLevelUpSound(PlayerEntity player){
+        player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
+                ModSounds.LEVEL_UP_SOUND, net.minecraft.sound.SoundCategory.PLAYERS, 1f, 1f);
+
+    }
+
+
+    public static int getLevel(float experience, PlayerEntity player) {
+
+        player.playSound(ModSounds.LEVEL_UP_SOUND, 1f,1f);
         int level = 1;
         float lastExp = 100;
-        while (true) {
-            float nextLevelExp = (float) Math.pow(1.1f, level) * 100 + lastExp;
-            if (experience >= nextLevelExp) {
-                level++;
-                lastExp = nextLevelExp;
-            } else {
-                break;
+
+         if (experience >= 100 && experience < 210){
+            level = 2;
+        }
+        else {
+            while (true) {
+                float nextLevelExp = (float) Math.pow(1.1f, level) * 100 + lastExp;
+                if (experience >= nextLevelExp) {
+                    level++;
+                    lastExp = nextLevelExp;
+                } else {
+                    break;
+                }
             }
         }
+        if (lastLevel < level){
+            playLevelUpSound(player);
+        }
+        lastLevel = level;
         return level;
     }
 
@@ -57,7 +81,7 @@ public class SkillXPSystem {
         }
 
         state.totalScore += 1.5f;
-        state.level = getLevel(state.totalScore);
+        state.level = getLevel(state.totalScore, player);
         ServerSkillsSync.send(player);
 
 

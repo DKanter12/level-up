@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.commands.ModCommands;
 import com.example.packets.ServerSkillsSync;
+import com.example.souds.ModSounds;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,7 @@ public class LevelUpMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ModSounds.register();
         ModEvents.register();
         ModCommands.register();
 

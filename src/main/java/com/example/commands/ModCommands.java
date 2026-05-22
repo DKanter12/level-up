@@ -74,7 +74,7 @@ public class ModCommands {
                                                        default -> null;
                                                    };
                                                    if (skillId != null) {
-                                                       skills.put(skillId, new SkillState(amount, SkillXPSystem.getLevel(amount)));
+                                                       skills.put(skillId, new SkillState(amount, SkillXPSystem.getLevel(amount, player)));
                                                        ServerSkillsSync.send(player);
                                                        context.getSource().sendFeedback(() -> Text.literal("Установлен опыт " + amount + " для " + skillName), false);
                                                    } else {
