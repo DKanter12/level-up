@@ -26,8 +26,6 @@ public class GUI extends Screen {
           //привет это джемини
         // СПАСИ МЕНЯ ПОЖАЛУЙСТА!!!!!
 
-
-
         context.drawText(textRenderer, Text.translatable("class.miner"), 65, 10, 0xFFFF00, true);
         context.drawText(textRenderer, Text.translatable("class.miner.line1"), 65, 20, 16777215, true);
         context.drawText(textRenderer, Text.translatable("class.miner.line2"), 65, 30, 16777215, true);
