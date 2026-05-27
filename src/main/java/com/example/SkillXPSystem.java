@@ -11,10 +11,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class SkillXPSystem {
-    private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
-    private static  int lastLevel = 1;
+import static com.example.LevelUpMod.LOGGER;
 
+public class SkillXPSystem {
+    private static int lastLevel;
+    private static final Map<UUID, Class<?>> lastKilledMob = new HashMap<>();
     public void addExp(PlayerEntity player, SkillAction action, Entity target) {
         switch (action) {
             case MINE_ORE, MINE_STONE -> addById(player, PlayerSkills.MINER_ID);
@@ -44,7 +45,6 @@ public class SkillXPSystem {
         player.playSound(ModSounds.LEVEL_UP_SOUND, 1f,1f);
         int level = 1;
         float lastExp = 100;
-
          if (experience >= 100 && experience < 210){
             level = 2;
         }
@@ -59,6 +59,8 @@ public class SkillXPSystem {
                 }
             }
         }
+
+
         if (lastLevel < level){
             playLevelUpSound(player);
         }
@@ -76,7 +78,8 @@ public class SkillXPSystem {
             state = skills.get(skillId);
         }
 
-        state.totalScore += 1.5f;
+        state.totalScore += 1f;
+        lastLevel = state.level;
         state.level = getLevel(state.totalScore, player);
         ServerSkillsSync.send(player);
 

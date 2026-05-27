@@ -42,8 +42,8 @@ public class ExampleModClient implements ClientModInitializer {
                 GUI gui = new GUI (Text.literal("level-up-menu"));
                 gui.minerWidth = gui.getWidth(ClientSkillsCache.MINER_SCORE);
                 gui.warriorWidth = gui.getWidth(ClientSkillsCache.WARRIOR_SCORE);
-                gui.farmerWidth = gui.getWidth(ClientSkillsCache.ARCHER_SCORE);
-                gui.archerWidth = gui.getWidth(ClientSkillsCache.FARMER_SCORE);
+                gui.farmerWidth = gui.getWidth(ClientSkillsCache.FARMER_SCORE);
+                gui.archerWidth = gui.getWidth(ClientSkillsCache.ARCHER_SCORE);
                 gui.blacksmithWidth = gui.getWidth(ClientSkillsCache.BLACKSMITH_SCORE);
 
                 MinecraftClient.getInstance().setScreen(gui);

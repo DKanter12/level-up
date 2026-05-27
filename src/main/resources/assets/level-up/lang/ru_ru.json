@@ -1,4 +1,6 @@
 {
+  "level-up-menu": "Skills menu",
+
   "class.miner": "Шахтёр",
   "class.miner.line1": "Получает опыт за добычу руды",
   "class.miner.line2": "и копку природного гладкого камня",
