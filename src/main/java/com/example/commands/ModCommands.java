@@ -36,7 +36,8 @@ public class ModCommands {
                                         format(skills, "Warrior", WARRIOR_ID) +
                                         format(skills, "Farmer", FARMER_ID) +
                                         format(skills, "Archer", ARCHER_ID) +
-                                        format(skills, "Blacksmith", BLACKSMITH_ID);
+                                        format(skills, "Blacksmith", BLACKSMITH_ID) +
+                                        format(skills, "Rider", RIDER_ID);
                                 context.getSource().sendFeedback(() -> Text.literal(info), false);
                                 return 1;
                             })
@@ -70,6 +71,7 @@ public class ModCommands {
                                                        case "farmer" -> FARMER_ID;
                                                        case "archer" -> ARCHER_ID;
                                                        case "blacksmith" -> BLACKSMITH_ID;
+                                                       case "rider" -> RIDER_ID;
 
                                                        default -> null;
                                                    };

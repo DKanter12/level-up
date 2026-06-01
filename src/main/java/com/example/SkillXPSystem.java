@@ -31,6 +31,7 @@ public class SkillXPSystem {
             case FARM_CROP -> addById(player, PlayerSkills.FARMER_ID);
             case BOW_HIT -> addById(player, PlayerSkills.ARCHER_ID);
             case ANVIL_REPAIR -> addById(player, PlayerSkills.BLACKSMITH_ID);
+            case RIDE -> addById(player, PlayerSkills.RIDER_ID);
         }
     }
 

@@ -14,10 +14,10 @@
   "class.farmer.line2": "например картошки",
 
   "class.archer": "Лучник",
-  "class.archer.line1": "Получает опыт за попадания",
-  "class.archer.line2": "по живым существам из лука",
+  "class.archer.line1": "Получает опыт за попадания по",
+  "class.archer.line2": "живым существам из лука",
 
   "class.blacksmith": "Кузнец",
-  "class.blacksmith.line1": "Получает опыт за починку",
-  "class.blacksmith.line2": "предметов на наковальне"
+  "class.blacksmith.line1": "Получает опыт за починку предметов",
+  "class.blacksmith.line2": "на наковальне"
 }

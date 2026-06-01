@@ -8,7 +8,13 @@ import net.minecraft.util.Identifier;
 import static com.example.LevelUpMod.MODID;
 
 public class GUI extends Screen {
-    public float lastExp = 100;
+    private static final int TEXT_X = 24;
+    private static final int ICON_X = 90;
+
+    // Шаг смещения для каждого следующего класса по горизонтали (вправо)
+    private static final int X_OFFSET_STEP = 240;
+
+    public  float lastExp = 100;
     public int minerWidth;
     public int warriorWidth;
     public int farmerWidth;
@@ -17,80 +23,105 @@ public class GUI extends Screen {
 
     int percent;
 
+    // --- ПЕРЕМЕННЫЕ ДЛЯ ПЛАВАЮЩЕГО GUI ---
+    private double scrollX = 0;
+    private double scrollY = 0;
+    private boolean isDragging = false;
+
     public GUI(Text title) {
         super(title);
     }
 
     @Override
+    protected void init() {
+        super.init();
+    }
+
+    @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        // Рендерим стандартный задний фон (затемнение мира)
+        this.renderBackground(context);
 
-        context.drawText(textRenderer, Text.translatable("class.miner"),
-                65, 10, 0xFFFF00, true);
+        // Сохраняем состояние матрицы и сдвигаем весь последующий рендер
+        context.getMatrices().push();
+        context.getMatrices().translate(scrollX, scrollY, 0);
 
-        context.drawText(textRenderer, Text.translatable("class.miner.line1"),
-                65, 20, 0xFFFFFF, true);
+        int minerX = 0;
+        renderClassLines("miner", TEXT_X + minerX, 50, context);
+        setClassIcon("miner_icon", minerX, 8, context);
+        setProgressBar(minerX, minerWidth, context);
 
-        context.drawText(textRenderer, Text.translatable("class.miner.line2"),
-                65, 30, 0xFFFFFF, true);
+        int warriorX = X_OFFSET_STEP;
+        renderClassLines("warrior", TEXT_X + 5 + warriorX, 50, context);
+        setClassIcon("warrior_icon", warriorX, 8, context);
+        setProgressBar(warriorX, warriorWidth, context);
 
-        context.drawText(textRenderer, Text.translatable("class.warrior"),
-                65, 50, 0xFFFF00, true);
+        int farmerX = X_OFFSET_STEP * 2;
+        renderClassLines("farmer", TEXT_X + farmerX, 50, context);
+        setClassIcon("farmer_icon", farmerX, 8, context);
+        setProgressBar(farmerX, farmerWidth, context);
 
-        context.drawText(textRenderer, Text.translatable("class.warrior.line1"),
-                65, 60, 0xFFFFFF, true);
+        int archerX = X_OFFSET_STEP * 3; // Сдвиг вправо на 720
+        renderClassLines("archer", TEXT_X  + archerX, 50, context);
+        setClassIcon("archer_icon", archerX, 8, context);
+        setProgressBar(archerX, archerWidth, context);
 
-        context.drawText(textRenderer, Text.translatable("class.warrior.line2"),
-                65, 70, 0xFFFFFF, true);
+        int blacksmithX = X_OFFSET_STEP * 4;
+        renderClassLines("blacksmith", TEXT_X + blacksmithX, 50, context);
+        setClassIcon("blacksmith_icon", blacksmithX, 8, context);
+        setProgressBar(blacksmithX, blacksmithWidth, context);
 
+        context.getMatrices().pop();
 
-        context.drawText(textRenderer, Text.translatable("class.farmer"),
-                65, 90, 0xFFFF00, true);
-
-        context.drawText(textRenderer, Text.translatable("class.farmer.line1"),
-                65, 100, 0xFFFFFF, true);
-
-        context.drawText(textRenderer, Text.translatable("class.farmer.line2"),
-                65, 110, 0xFFFFFF, true);
-
-
-        context.drawText(textRenderer, Text.translatable("class.archer"),
-                65, 130, 0xFFFF00, true);
-
-        context.drawText(textRenderer, Text.translatable("class.archer.line1"),
-                65, 140, 0xFFFFFF, true);
-
-        context.drawText(textRenderer, Text.translatable("class.archer.line2"),
-                65, 150, 0xFFFFFF, true);
-
-
-        context.drawText(textRenderer, Text.translatable("class.blacksmith"),
-                65, 170, 0xFFFF00, true);
-
-        context.drawText(textRenderer, Text.translatable("class.blacksmith.line1"),
-                65, 180, 0xFFFFFF, true);
-
-        context.drawText(textRenderer, Text.translatable("class.blacksmith.line2"),
-                65, 190, 0xFFFFFF, true);
-
-
-        setClassIcon("miner_icon", 8, context);
-        setClassIcon("warrior_icon", 48, context);
-        setClassIcon("farmer_icon", 88, context);
-        setClassIcon("archer_icon", 128, context);
-        setClassIcon("blacksmith_icon", 168, context);
-
-
-        setProgressBar(21, minerWidth, 18, context);
-        setProgressBar(61, warriorWidth, 58, context);
-        setProgressBar(101, farmerWidth, 98, context);
-        setProgressBar(141, archerWidth, 138, context);
-        setProgressBar(181, blacksmithWidth, 178, context);
+        super.render(context, mouseX, mouseY, delta);
     }
 
 
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            this.isDragging = true;
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            this.isDragging = false;
+            return true;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (this.isDragging) {
+            this.scrollX += deltaX;
+            this.scrollY += deltaY;
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    @Override
+    public boolean shouldPause() {
+        return false;
+    }private void renderClassLines(String classKey, int x, int yTitle, DrawContext context) {
+        context.drawText(textRenderer, Text.translatable("class." + classKey),
+                x + 66, yTitle, 0xFFFF00, true);
+
+        context.drawText(textRenderer, Text.translatable("class." + classKey + ".line1"),
+                x, yTitle + 10, 0xFFFFFF, true);
+
+        context.drawText(textRenderer, Text.translatable("class." + classKey + ".line2"),
+                x, yTitle + 20, 0xFFFFFF, true);
+    }
+
     public int getWidth (float experience){
         if (experience <= 100){
-            return (int) (1.5f * experience);
+            return (int) (2f * experience);
         }
         else {
             float onePercent = (getLevelUpExp(experience) - lastExp) / 100;
@@ -98,7 +129,7 @@ public class GUI extends Screen {
             while (true) {
                 percent++;
                 if (onePercent * percent >= experience - lastExp) {
-                    float width = 1.5f * percent;
+                    float width = 2f * percent;
                     return (int) width;
                 }
             }
@@ -121,20 +152,17 @@ public class GUI extends Screen {
         return LevelUpExp;
     }
 
-    private void setProgressBar(int y, int width, int frameY, DrawContext context){
-        int scaledGuiX = 1;
-
+    private void setProgressBar(int offsetX, int width, DrawContext context){
         context.drawTexture(new Identifier(MODID, "textures/progress_bar/progress_bar_frame.png"),
-                258 / scaledGuiX, frameY, 0, 0, 156, 22, 156, 22);
+                15 + offsetX, 90, 0, 0, 206, 26, 206, 26);
 
         context.drawTexture(new Identifier(MODID, "textures/progress_bar/progress_bar.png"),
-                261 / scaledGuiX, y, 0, 0, width, 16, 150, 16);
+                18 + offsetX, 93, 0, 0, width, 20, 200, 20);
     }
 
-    private void setClassIcon(String textureName, int y, DrawContext context) {
-        int x = 24;
+    private void setClassIcon(String textureName, int offsetX, int y, DrawContext context) {
         context.drawTexture(new Identifier(MODID, "textures/" + textureName + ".png"),
-                x, y, 0, 0, 34, 34, 34, 34);
+                ICON_X + offsetX, y, 0, 0, 34, 34, 34, 34);
     }
-
 }
+

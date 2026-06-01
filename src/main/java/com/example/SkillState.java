@@ -2,8 +2,6 @@ package com.example;
 
 import net.minecraft.nbt.NbtCompound;
 
-import static com.example.PlayerSkills.LOGGER;
-
 public class SkillState {
     public float totalScore;
     public int level;

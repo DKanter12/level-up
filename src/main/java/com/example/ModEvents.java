@@ -7,11 +7,15 @@ import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.HorseEntity;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.CraftingScreenHandler;
 
 import java.util.Set;
+
+import static com.example.LevelUpMod.LOGGER;
 
 public class ModEvents {
 
@@ -29,8 +33,9 @@ public class ModEvents {
 
     );
 
-    public static void register() {
+    public static void register(PlayerEntity playerEntity) {
         SkillXPSystem skillXPSystem = new SkillXPSystem();
+
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
             if (source.getAttacker() instanceof PlayerEntity player) {
                 skillXPSystem.addExp(player, SkillAction.KILL_MOB, entity);
@@ -72,4 +77,5 @@ public class ModEvents {
             return true;
         });
     }
+
 }

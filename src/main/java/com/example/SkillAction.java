@@ -7,5 +7,6 @@ public enum SkillAction {
     KILL_PLAYER,
     FARM_CROP,
     BOW_HIT,
-    ANVIL_REPAIR
+    ANVIL_REPAIR,
+    RIDE
 }

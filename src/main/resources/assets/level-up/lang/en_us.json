@@ -13,8 +13,8 @@
   "class.farmer.line2": "for example potatoes",
 
   "class.archer": "Archer",
-  "class.archer.line1": "Gains experience from hitting",
-  "class.archer.line2": "living entities with a bow",
+  "class.archer.line1": "Gains experience from hitting living ",
+  "class.archer.line2": "entities with a bow",
 
   "class.blacksmith": "Blacksmith",
   "class.blacksmith.line1": "Gains experience by repairing",

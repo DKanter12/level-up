@@ -6,6 +6,7 @@
       "LevelUpMixin",
 		"AnvilRepairMixin",
       "PlayerSkillsMixin"
+
 	],
 	"injectors": {
 		"defaultRequire": 1
