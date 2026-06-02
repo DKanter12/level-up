@@ -1,5 +1,5 @@
 {
-  "level-up-menu": "Меню навыков",
+  "level-up-menu": "SKills menu",
   "class.miner": "Miner",
   "class.miner.line1": "Gains experience from mining ores",
   "class.miner.line2": "and digging natural smooth stone",
@@ -18,5 +18,9 @@
 
   "class.blacksmith": "Blacksmith",
   "class.blacksmith.line1": "Gains experience by repairing",
-  "class.blacksmith.line2": "items on an anvil"
+  "class.blacksmith.line2": "items on an anvil",
+
+  "class.rider": "Rider",
+  "class.rider.line1": "Earns experience for traveling ",
+  "class.rider.line2": "while mounted on a pig or a horse"
 }

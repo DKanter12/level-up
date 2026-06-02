@@ -45,7 +45,7 @@ public class ExampleModClient implements ClientModInitializer {
                 gui.farmerWidth = gui.getWidth(ClientSkillsCache.FARMER_SCORE);
                 gui.archerWidth = gui.getWidth(ClientSkillsCache.ARCHER_SCORE);
                 gui.blacksmithWidth = gui.getWidth(ClientSkillsCache.BLACKSMITH_SCORE);
-
+                gui.riderWidth = gui.getWidth(ClientSkillsCache.RIDER_SCORE);
                 MinecraftClient.getInstance().setScreen(gui);
             }
         });

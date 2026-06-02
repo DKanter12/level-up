@@ -22,6 +22,7 @@ public class ServerSkillsSync {
         buf.writeFloat(skills.get(PlayerSkills.FARMER_ID).totalScore);
         buf.writeFloat(skills.get(PlayerSkills.ARCHER_ID).totalScore);
         buf.writeFloat(skills.get(PlayerSkills.BLACKSMITH_ID).totalScore);
+        buf.writeFloat(skills.get(PlayerSkills.RIDER_ID).totalScore);
 
         ServerPlayNetworking.send((ServerPlayerEntity) player, ModPackets.SYNC_SKILLS, buf);
 

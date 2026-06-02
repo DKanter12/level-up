@@ -19,5 +19,10 @@
 
   "class.blacksmith": "Кузнец",
   "class.blacksmith.line1": "Получает опыт за починку предметов",
-  "class.blacksmith.line2": "на наковальне"
+  "class.blacksmith.line2": "на наковальне",
+
+  "class.rider": "Наездник",
+  "class.rider.line1": "Получает опыт за проезд верхом ",
+  "class.rider.line2": "на свинье или лошади"
+
 }

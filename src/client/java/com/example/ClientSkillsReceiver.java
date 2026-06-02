@@ -13,13 +13,14 @@ public class ClientSkillsReceiver {
             float farmer = buf.readFloat();
             float archer = buf.readFloat();
             float blacksmith = buf.readFloat();
-
+            float rider = buf.readFloat();
             client.execute(() -> {
                 ClientSkillsCache.MINER_SCORE = miner;
                 ClientSkillsCache.WARRIOR_SCORE = warrior;
                 ClientSkillsCache.FARMER_SCORE = farmer;
                 ClientSkillsCache.ARCHER_SCORE = archer;
                 ClientSkillsCache.BLACKSMITH_SCORE = blacksmith;
+                ClientSkillsCache.RIDER_SCORE = rider;
             });
         }));
     }

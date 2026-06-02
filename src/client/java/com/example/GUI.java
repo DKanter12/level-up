@@ -20,10 +20,9 @@ public class GUI extends Screen {
     public int farmerWidth;
     public int archerWidth;
     public int blacksmithWidth;
+    public int riderWidth;
 
     int percent;
-
-    // --- ПЕРЕМЕННЫЕ ДЛЯ ПЛАВАЮЩЕГО GUI ---
     private double scrollX = 0;
     private double scrollY = 0;
     private boolean isDragging = false;
@@ -39,10 +38,7 @@ public class GUI extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        // Рендерим стандартный задний фон (затемнение мира)
         this.renderBackground(context);
-
-        // Сохраняем состояние матрицы и сдвигаем весь последующий рендер
         context.getMatrices().push();
         context.getMatrices().translate(scrollX, scrollY, 0);
 
@@ -70,6 +66,12 @@ public class GUI extends Screen {
         renderClassLines("blacksmith", TEXT_X + blacksmithX, 50, context);
         setClassIcon("blacksmith_icon", blacksmithX, 8, context);
         setProgressBar(blacksmithX, blacksmithWidth, context);
+
+        int riderX = X_OFFSET_STEP * 5;
+        renderClassLines("rider", TEXT_X + riderX - 5, 50, context);
+        setClassIcon("rider_icon", riderX, 8, context);
+        setProgressBar(riderX, riderWidth, context);
+
 
         context.getMatrices().pop();
 
